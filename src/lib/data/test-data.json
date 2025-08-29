@@ -1,0 +1,703 @@
+{
+  "meta": {
+    "description": "Test data for nondominium UI prototyping",
+    "created": "2025-01-28",
+    "version": "1.0",
+    "schema_version": "Phase 1 - Person management complete, Phase 2 - Resource & Governance in progress"
+  },
+  "persons": [
+    {
+      "id": "agent_lynn",
+      "person": {
+        "name": "Lynn Martin",
+        "avatar_url": "https://images.unsplash.com/photo-1494790108755-2616b612b8fd?w=150",
+        "bio": "Community founder passionate about sustainable resource sharing. Background in environmental science and cooperative governance."
+      },
+      "private_data": {
+        "legal_name": "Lynn Marie Martin",
+        "email": "lynn.martin@example.com",
+        "phone": "+1-514-555-0101",
+        "address": "123 Maple Street, Montreal, QC H2X 1Y7",
+        "emergency_contact": "Bob Martin (spouse) - +1-514-555-0102",
+        "time_zone": "America/Montreal",
+        "location": "Montreal, Quebec"
+      },
+      "roles": [
+        {
+          "role_name": "Community Founder",
+          "description": "Established the community and provides strategic leadership",
+          "assigned_at": "2024-01-15T10:00:00Z"
+        },
+        {
+          "role_name": "Governance Coordinator",
+          "description": "Oversees governance processes and dispute resolution",
+          "assigned_at": "2024-02-01T14:30:00Z"
+        }
+      ]
+    },
+    {
+      "id": "agent_bob",
+      "person": {
+        "name": "Bob Chen",
+        "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
+        "bio": "Skilled carpenter and tool maker. Specializes in creating and maintaining woodworking equipment for the community."
+      },
+      "private_data": {
+        "legal_name": "Robert Chen",
+        "email": "bob.chen@example.com",
+        "phone": "+1-514-555-0201",
+        "address": "456 Oak Avenue, Montreal, QC H3A 2B8",
+        "emergency_contact": "Sarah Chen (sister) - +1-514-555-0202",
+        "time_zone": "America/Montreal",
+        "location": "Montreal, Quebec"
+      },
+      "roles": [
+        {
+          "role_name": "Resource Steward",
+          "description": "Maintains and repairs community tools and equipment",
+          "assigned_at": "2024-01-20T09:15:00Z"
+        }
+      ]
+    },
+    {
+      "id": "agent_carol",
+      "person": {
+        "name": "Carol Rivera",
+        "avatar_url": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
+        "bio": "Transportation coordinator with experience in logistics and supply chain management. Helps community members access resources efficiently."
+      },
+      "private_data": {
+        "legal_name": "Carolina Rivera",
+        "email": "carol.rivera@example.com",
+        "phone": "+1-514-555-0301",
+        "address": "789 Pine Street, Montreal, QC H4B 1X5",
+        "emergency_contact": "Miguel Rivera (father) - +1-514-555-0302",
+        "time_zone": "America/Montreal",
+        "location": "Montreal, Quebec"
+      },
+      "roles": [
+        {
+          "role_name": "Resource Coordinator",
+          "description": "Coordinates resource allocation and transportation logistics",
+          "assigned_at": "2024-01-25T11:45:00Z"
+        }
+      ]
+    },
+    {
+      "id": "agent_dave",
+      "person": {
+        "name": "Dave Thompson",
+        "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+        "bio": "New community member eager to learn and contribute. Background in software development, interested in sustainable living."
+      },
+      "private_data": {
+        "legal_name": "David Michael Thompson",
+        "email": "dave.thompson@example.com",
+        "phone": "+1-514-555-0401",
+        "address": "321 Birch Lane, Montreal, QC H2Y 3K9",
+        "time_zone": "America/Montreal",
+        "location": "Montreal, Quebec"
+      },
+      "roles": [
+        {
+          "role_name": "Simple Member",
+          "description": "Community member with basic participation privileges",
+          "assigned_at": "2024-03-01T16:20:00Z"
+        }
+      ]
+    },
+    {
+      "id": "agent_eve",
+      "person": {
+        "name": "Eve Patel",
+        "avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+        "bio": "Community advocate focused on inclusivity and member support. Has experience in social work and conflict mediation."
+      },
+      "private_data": {
+        "legal_name": "Evelyn Patel",
+        "email": "eve.patel@example.com",
+        "phone": "+1-514-555-0501",
+        "address": "654 Cedar Road, Montreal, QC H3C 4D2",
+        "emergency_contact": "Raj Patel (brother) - +1-514-555-0502",
+        "time_zone": "America/Montreal",
+        "location": "Montreal, Quebec"
+      },
+      "roles": [
+        {
+          "role_name": "Community Advocate",
+          "description": "Supports community members and mediates conflicts",
+          "assigned_at": "2024-02-10T13:00:00Z"
+        },
+        {
+          "role_name": "Community Moderator",
+          "description": "Moderates community discussions and ensures respectful communication",
+          "assigned_at": "2024-02-15T10:30:00Z"
+        }
+      ]
+    }
+  ],
+  "data_access_requests": [
+    {
+      "id": "request_001",
+      "requested_from": "agent_lynn",
+      "requested_by": "agent_bob",
+      "fields_requested": [
+        "email",
+        "phone"
+      ],
+      "context": "custodian_transfer",
+      "justification": "Need contact information to coordinate the transfer of woodworking tools to new custodian",
+      "status": "approved",
+      "created_at": "2024-03-10T14:20:00Z"
+    },
+    {
+      "id": "request_002",
+      "requested_from": "agent_dave",
+      "requested_by": "agent_carol",
+      "fields_requested": [
+        "location",
+        "phone"
+      ],
+      "context": "resource_delivery",
+      "justification": "Need location and contact info to arrange pickup of shared laptop computer",
+      "status": "pending",
+      "created_at": "2024-03-15T09:45:00Z"
+    }
+  ],
+  "data_access_grants": [
+    {
+      "id": "grant_001",
+      "granted_to": "agent_bob",
+      "granted_by": "agent_lynn",
+      "fields_granted": [
+        "email",
+        "phone"
+      ],
+      "context": "custodian_transfer",
+      "expires_at": "2024-03-17T14:20:00Z",
+      "created_at": "2024-03-10T14:25:00Z"
+    }
+  ],
+  "resource_specifications": [
+    {
+      "id": "spec_001",
+      "name": "Professional Woodworking Table Saw",
+      "description": "High-precision cabinet table saw with cast iron top, suitable for fine woodworking and furniture making. Includes safety features and dust collection system.",
+      "category": "workshop_tools",
+      "image_url": "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=400",
+      "tags": [
+        "woodworking",
+        "table_saw",
+        "professional",
+        "workshop",
+        "furniture_making"
+      ],
+      "governance_rules": [
+        "rule_001",
+        "rule_002"
+      ],
+      "created_by": "agent_bob",
+      "created_at": "2024-01-20T10:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "spec_002",
+      "name": "Cargo Bike for Community Deliveries",
+      "description": "Electric-assist cargo bicycle with large front box, perfect for transporting resources around the community. Weather-resistant and high capacity.",
+      "category": "transportation",
+      "image_url": "https://images.unsplash.com/photo-1558618047-b2ca3d7c997c?w=400",
+      "tags": [
+        "cargo_bike",
+        "electric",
+        "transportation",
+        "delivery",
+        "sustainable"
+      ],
+      "governance_rules": [
+        "rule_003",
+        "rule_004"
+      ],
+      "created_by": "agent_carol",
+      "created_at": "2024-01-25T15:30:00Z",
+      "is_active": true
+    },
+    {
+      "id": "spec_003",
+      "name": "Community Garden Tool Set",
+      "description": "Complete set of gardening tools including spades, hoes, pruning shears, watering equipment. Maintained collectively for community garden use.",
+      "category": "gardening",
+      "image_url": "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400",
+      "tags": [
+        "gardening",
+        "tools",
+        "community_garden",
+        "agriculture",
+        "collective"
+      ],
+      "governance_rules": [
+        "rule_005"
+      ],
+      "created_by": "agent_lynn",
+      "created_at": "2024-02-01T09:15:00Z",
+      "is_active": true
+    },
+    {
+      "id": "spec_004",
+      "name": "Laptop Computer for Development Work",
+      "description": "High-performance laptop suitable for software development, design work, and community administration. Includes development tools and office software.",
+      "category": "technology",
+      "image_url": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400",
+      "tags": [
+        "laptop",
+        "computer",
+        "development",
+        "office",
+        "technology"
+      ],
+      "governance_rules": [
+        "rule_006",
+        "rule_007"
+      ],
+      "created_by": "agent_dave",
+      "created_at": "2024-03-01T11:20:00Z",
+      "is_active": true
+    }
+  ],
+  "governance_rules": [
+    {
+      "id": "rule_001",
+      "rule_type": "access_requirement",
+      "rule_data": "{\"required_role\": \"Resource Steward\", \"required_training\": \"workshop_safety\", \"supervision_required\": false}",
+      "enforced_by": "Resource Steward",
+      "created_by": "agent_bob",
+      "created_at": "2024-01-20T10:05:00Z"
+    },
+    {
+      "id": "rule_002",
+      "rule_type": "usage_limit",
+      "rule_data": "{\"max_usage_hours\": 8, \"max_consecutive_days\": 3, \"booking_required\": true}",
+      "enforced_by": "Resource Steward",
+      "created_by": "agent_bob",
+      "created_at": "2024-01-20T10:10:00Z"
+    },
+    {
+      "id": "rule_003",
+      "rule_type": "access_requirement",
+      "rule_data": "{\"required_role\": \"Simple Member\", \"required_training\": \"bike_safety\", \"supervision_required\": false}",
+      "enforced_by": "Resource Coordinator",
+      "created_by": "agent_carol",
+      "created_at": "2024-01-25T15:35:00Z"
+    },
+    {
+      "id": "rule_004",
+      "rule_type": "transfer_conditions",
+      "rule_data": "{\"return_condition\": \"charged_and_clean\", \"damage_reporting\": \"required\", \"maintenance_check\": \"weekly\"}",
+      "enforced_by": "Resource Coordinator",
+      "created_by": "agent_carol",
+      "created_at": "2024-01-25T15:40:00Z"
+    },
+    {
+      "id": "rule_005",
+      "rule_type": "usage_limit",
+      "rule_data": "{\"seasonal_access\": true, \"return_clean\": true, \"group_coordination\": \"encouraged\"}",
+      "enforced_by": null,
+      "created_by": "agent_lynn",
+      "created_at": "2024-02-01T09:20:00Z"
+    },
+    {
+      "id": "rule_006",
+      "rule_type": "access_requirement",
+      "rule_data": "{\"required_role\": \"Simple Member\", \"data_backup\": \"required\", \"software_maintenance\": \"user_responsible\"}",
+      "enforced_by": null,
+      "created_by": "agent_dave",
+      "created_at": "2024-03-01T11:25:00Z"
+    },
+    {
+      "id": "rule_007",
+      "rule_type": "transfer_conditions",
+      "rule_data": "{\"transfer_notice\": \"24_hours\", \"handover_meeting\": \"required\", \"condition_documentation\": \"required\"}",
+      "enforced_by": null,
+      "created_by": "agent_dave",
+      "created_at": "2024-03-01T11:30:00Z"
+    }
+  ],
+  "economic_resources": [
+    {
+      "id": "resource_001",
+      "conforms_to": "spec_001",
+      "quantity": 1.0,
+      "unit": "item",
+      "custodian": "agent_bob",
+      "created_by": "agent_bob",
+      "created_at": "2024-01-20T12:00:00Z",
+      "current_location": "Bob's Workshop, 456 Oak Avenue",
+      "state": "active"
+    },
+    {
+      "id": "resource_002",
+      "conforms_to": "spec_002",
+      "quantity": 1.0,
+      "unit": "item",
+      "custodian": "agent_carol",
+      "created_by": "agent_carol",
+      "created_at": "2024-01-25T16:00:00Z",
+      "current_location": "Community Storage Shed",
+      "state": "active"
+    },
+    {
+      "id": "resource_003",
+      "conforms_to": "spec_003",
+      "quantity": 1.0,
+      "unit": "set",
+      "custodian": "agent_lynn",
+      "created_by": "agent_lynn",
+      "created_at": "2024-02-01T10:00:00Z",
+      "current_location": "Community Garden Tool Shed",
+      "state": "active"
+    },
+    {
+      "id": "resource_004",
+      "conforms_to": "spec_004",
+      "quantity": 1.0,
+      "unit": "item",
+      "custodian": "agent_dave",
+      "created_by": "agent_dave",
+      "created_at": "2024-03-01T12:00:00Z",
+      "current_location": "Dave's Home Office",
+      "state": "active"
+    },
+    {
+      "id": "resource_005",
+      "conforms_to": "spec_002",
+      "quantity": 1.0,
+      "unit": "item",
+      "custodian": "agent_bob",
+      "created_by": "agent_carol",
+      "created_at": "2024-02-15T14:30:00Z",
+      "current_location": "Bob's Garage",
+      "state": "maintenance"
+    },
+    {
+      "id": "resource_006",
+      "conforms_to": "spec_001",
+      "quantity": 1.0,
+      "unit": "item",
+      "custodian": "agent_eve",
+      "created_by": "agent_eve",
+      "created_at": "2024-02-20T11:00:00Z",
+      "current_location": "Eve's Studio",
+      "state": "available"
+    },
+    {
+      "id": "resource_007",
+      "conforms_to": "spec_003",
+      "quantity": 1.0,
+      "unit": "set",
+      "custodian": "agent_carol",
+      "created_by": "agent_carol",
+      "created_at": "2024-02-25T13:00:00Z",
+      "current_location": "Carol's Garden",
+      "state": "in_use"
+    },
+    {
+      "id": "resource_008",
+      "conforms_to": "spec_004",
+      "quantity": 1.0,
+      "unit": "item",
+      "custodian": "agent_lynn",
+      "created_by": "agent_lynn",
+      "created_at": "2024-03-05T09:00:00Z",
+      "current_location": "Community Office",
+      "state": "available"
+    },
+    {
+      "id": "resource_009",
+      "conforms_to": "spec_002",
+      "quantity": 1.0,
+      "unit": "item",
+      "custodian": "agent_dave",
+      "created_by": "agent_dave",
+      "created_at": "2024-03-10T15:00:00Z",
+      "current_location": "Dave's Shed",
+      "state": "dormant"
+    },
+    {
+      "id": "resource_010",
+      "conforms_to": "spec_001",
+      "quantity": 1.0,
+      "unit": "item",
+      "custodian": "agent_bob",
+      "created_by": "agent_bob",
+      "created_at": "2024-03-12T10:00:00Z",
+      "current_location": "Bob's Workshop",
+      "state": "pending"
+    }
+  ],
+  "commitments": [
+    {
+      "id": "commitment_001",
+      "action": "Transfer",
+      "provider": "agent_bob",
+      "receiver": "agent_dave",
+      "resource_inventoried_as": "resource_001",
+      "due_date": "2024-03-20T10:00:00Z",
+      "note": "Transfer table saw for Dave's furniture project",
+      "committed_at": "2024-03-15T14:20:00Z"
+    },
+    {
+      "id": "commitment_002",
+      "action": "Use",
+      "provider": "agent_lynn",
+      "receiver": "agent_eve",
+      "resource_inventoried_as": "resource_003",
+      "due_date": "2024-03-25T09:00:00Z",
+      "note": "Spring garden preparation work",
+      "committed_at": "2024-03-18T11:15:00Z"
+    },
+    {
+      "id": "commitment_003",
+      "action": "Modify",
+      "provider": "agent_bob",
+      "receiver": "agent_carol",
+      "resource_inventoried_as": "resource_005",
+      "due_date": "2024-03-22T16:00:00Z",
+      "note": "Repair and maintenance of cargo bike",
+      "committed_at": "2024-03-16T09:30:00Z"
+    },
+    {
+      "id": "commitment_004",
+      "action": "Transfer",
+      "provider": "agent_eve",
+      "receiver": "agent_lynn",
+      "resource_inventoried_as": "resource_006",
+      "due_date": "2024-03-28T14:00:00Z",
+      "note": "Share woodworking tools for community project",
+      "committed_at": "2024-03-20T16:45:00Z"
+    },
+    {
+      "id": "commitment_005",
+      "action": "Use",
+      "provider": "agent_carol",
+      "receiver": "agent_dave",
+      "resource_inventoried_as": "resource_007",
+      "due_date": "2024-03-30T10:00:00Z",
+      "note": "Garden maintenance and planting",
+      "committed_at": "2024-03-22T11:30:00Z"
+    },
+    {
+      "id": "commitment_006",
+      "action": "Transfer",
+      "provider": "agent_lynn",
+      "receiver": "agent_eve",
+      "resource_inventoried_as": "resource_008",
+      "due_date": "2024-04-02T09:00:00Z",
+      "note": "Laptop for community administration work",
+      "committed_at": "2024-03-25T13:15:00Z"
+    },
+    {
+      "id": "commitment_007",
+      "action": "Modify",
+      "provider": "agent_dave",
+      "receiver": "agent_bob",
+      "resource_inventoried_as": "resource_009",
+      "due_date": "2024-04-05T16:00:00Z",
+      "note": "Cargo bike repair and upgrade",
+      "committed_at": "2024-03-28T10:20:00Z"
+    },
+    {
+      "id": "commitment_008",
+      "action": "Transfer",
+      "provider": "agent_bob",
+      "receiver": "agent_carol",
+      "resource_inventoried_as": "resource_010",
+      "due_date": "2024-04-08T11:00:00Z",
+      "note": "New table saw for community workshop",
+      "committed_at": "2024-03-30T14:45:00Z"
+    }
+  ],
+  "economic_events": [
+    {
+      "id": "event_001",
+      "action": "Produce",
+      "provider": "agent_bob",
+      "receiver": "agent_bob",
+      "resource_inventoried_as": "resource_001",
+      "affects": "resource_001",
+      "resource_quantity": 1.0,
+      "event_time": "2024-01-20T12:00:00Z",
+      "note": "Bob shared a table saw for community use"
+    },
+    {
+      "id": "event_002",
+      "action": "Transfer",
+      "provider": "agent_carol",
+      "receiver": "agent_bob",
+      "resource_inventoried_as": "resource_005",
+      "affects": "resource_005",
+      "resource_quantity": 1.0,
+      "event_time": "2024-02-15T15:00:00Z",
+      "note": "Carol transferred second cargo bike to Bob for maintenance"
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim_001",
+      "fulfills": "commitment_002",
+      "fulfilled_by": "event_002",
+      "claimed_at": "2024-02-15T15:30:00Z",
+      "note": "Custody transfer completed successfully"
+    }
+  ],
+  "validation_receipts": [
+    {
+      "id": "receipt_001",
+      "validator": "agent_lynn",
+      "validated_item": "resource_001",
+      "validation_type": "resource_approval",
+      "approved": true,
+      "notes": "Table saw meets community safety standards and quality requirements",
+      "validated_at": "2024-01-21T09:00:00Z"
+    },
+    {
+      "id": "receipt_002",
+      "validator": "agent_eve",
+      "validated_item": "resource_004",
+      "validation_type": "resource_approval",
+      "approved": true,
+      "notes": "Laptop is in good condition and properly configured for community use",
+      "validated_at": "2024-03-02T14:15:00Z"
+    }
+  ],
+  "resource_validations": [
+    {
+      "id": "validation_001",
+      "resource": "resource_001",
+      "validation_scheme": "simple_majority",
+      "required_validators": 2,
+      "current_validators": 2,
+      "status": "approved",
+      "created_at": "2024-01-20T14:00:00Z",
+      "updated_at": "2024-01-21T09:00:00Z"
+    },
+    {
+      "id": "validation_002",
+      "resource": "resource_004",
+      "validation_scheme": "2-of-3",
+      "required_validators": 2,
+      "current_validators": 1,
+      "status": "pending",
+      "created_at": "2024-03-01T16:00:00Z",
+      "updated_at": "2024-03-02T14:15:00Z"
+    }
+  ],
+  "private_participation_claims": [
+    {
+      "id": "ppr_001",
+      "fulfills": "commitment_001",
+      "fulfilled_by": "event_001",
+      "claimed_at": "2024-01-21T10:00:00Z",
+      "claim_type": "ResourceCreation",
+      "performance_metrics": {
+        "timeliness": 0.95,
+        "quality": 0.90,
+        "reliability": 1.0,
+        "communication": 0.85,
+        "overall_satisfaction": 0.90,
+        "notes": "Excellent craftsmanship and attention to safety features"
+      },
+      "counterparty": "agent_lynn",
+      "resource_hash": "resource_001",
+      "notes": "Bob created high-quality table saw that meets all community standards",
+      "bilateral_signature": {
+        "signed_data_hash": "a1b2c3d4e5f6789012345678901234567890123456789012345678901234567890",
+        "signed_at": "2024-01-21T10:15:00Z"
+      }
+    },
+    {
+      "id": "ppr_002",
+      "fulfills": "commitment_003",
+      "fulfilled_by": "event_002",
+      "claimed_at": "2024-02-15T16:00:00Z",
+      "claim_type": "CustodyAcceptance",
+      "performance_metrics": {
+        "timeliness": 1.0,
+        "quality": 0.95,
+        "reliability": 1.0,
+        "communication": 0.90,
+        "overall_satisfaction": 0.95,
+        "notes": "Prompt acceptance and proper handling of cargo bike"
+      },
+      "counterparty": "agent_carol",
+      "resource_hash": "resource_005",
+      "notes": "Bob accepted custody of cargo bike for maintenance work",
+      "bilateral_signature": {
+        "signed_data_hash": "b2c3d4e5f6789012345678901234567890123456789012345678901234567890a1",
+        "signed_at": "2024-02-15T16:05:00Z"
+      }
+    }
+  ],
+  "reputation_summaries": [
+    {
+      "agent": "agent_bob",
+      "total_claims": 2,
+      "average_performance": 0.925,
+      "creation_claims": 1,
+      "custody_claims": 1,
+      "service_claims": 0,
+      "governance_claims": 0,
+      "end_of_life_claims": 0,
+      "period_start": "2024-01-01T00:00:00Z",
+      "period_end": "2024-03-31T23:59:59Z",
+      "generated_at": "2024-03-20T12:00:00Z"
+    },
+    {
+      "agent": "agent_lynn",
+      "total_claims": 3,
+      "average_performance": 0.890,
+      "creation_claims": 1,
+      "custody_claims": 0,
+      "service_claims": 0,
+      "governance_claims": 2,
+      "end_of_life_claims": 0,
+      "period_start": "2024-01-01T00:00:00Z",
+      "period_end": "2024-03-31T23:59:59Z",
+      "generated_at": "2024-03-20T12:00:00Z"
+    }
+  ],
+  "ui_scenarios": [
+    {
+      "scenario": "New Member Onboarding",
+      "description": "Dave joins the community and creates his profile",
+      "steps": [
+        "Dave creates a Person profile with basic info",
+        "Dave adds private data with contact information",
+        "lynn (founder) assigns Dave the 'Simple Member' role",
+        "Dave contributes his laptop as a community resource",
+        "Community validates the laptop resource"
+      ]
+    },
+    {
+      "scenario": "Resource Sharing Workflow",
+      "description": "Bob transfers the table saw to Dave",
+      "steps": [
+        "Dave requests access to Bob's email for coordination",
+        "Bob approves the data access request",
+        "Bob creates a commitment to transfer the table saw",
+        "Transfer event is recorded when handover occurs",
+        "Both parties generate PPR claims for the interaction"
+      ]
+    },
+    {
+      "scenario": "Resource Maintenance",
+      "description": "The cargo bike needs repair",
+      "steps": [
+        "Carol creates commitment for Bob to maintain the bike",
+        "Carol transfers custody of bike to Bob",
+        "Bob changes resource state to 'maintenance'",
+        "Bob completes repairs and updates resource state",
+        "Bob transfers custody back to Carol",
+        "PPR claims are generated for the maintenance service"
+      ]
+    }
+  ]
+}
