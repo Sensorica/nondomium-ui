@@ -380,19 +380,20 @@
 		width: 100%;
 		height: 100%;
 		display: flex;
-		flex-direction: column;
-		justify-content: center;
+		flex-direction: column-reverse; /* Reverse the stacking order */
+		justify-content: flex-end; /* Align to bottom */
 		padding: 20px 0;
+		gap: 40px; /* Increased spacing between layers */
 	}
 
 	.landscape-layer {
 		position: relative;
 		width: 100%;
 		height: 60px;
-		margin: 5px 0;
 		transition: transform 0.3s ease-out;
 		pointer-events: auto;
 		overflow: visible;
+		transform-origin: bottom center; /* Set transform origin to bottom */
 	}
 
 	.layer-background {
@@ -401,6 +402,8 @@
 		height: 100%;
 		pointer-events: none;
 		border-radius: 8px;
+		background: rgba(255, 255, 255, 0.05);
+		backdrop-filter: blur(2px);
 	}
 
 	.layer-label {
@@ -417,11 +420,12 @@
 
 	/* Layer-specific styling for depth perception */
 	.layer-1 {
-		background: rgba(59, 130, 246, 0.1);
+		background: rgba(59, 130, 246, 0.15);
 		z-index: 10;
-		border: 1px solid rgba(59, 130, 246, 0.2);
+		border: 1px solid rgba(59, 130, 246, 0.3);
 		width: 90%;
 		margin-left: 5%;
+		transform: perspective(1000px) rotateX(0deg); /* No rotation for focus layer */
 	}
 
 	.layer-2 {
@@ -431,24 +435,27 @@
 		filter: blur(0.5px);
 		width: 85%;
 		margin-left: 7.5%;
+		transform: perspective(1000px) rotateX(10deg) translateY(20px); /* Slight tilt */
 	}
 
 	.layer-3 {
-		background: rgba(245, 158, 11, 0.1);
+		background: rgba(245, 158, 11, 0.08);
 		z-index: 6;
-		border: 1px solid rgba(245, 158, 11, 0.2);
+		border: 1px solid rgba(245, 158, 11, 0.15);
 		filter: blur(1px);
 		width: 80%;
 		margin-left: 10%;
+		transform: perspective(1000px) rotateX(20deg) translateY(40px); /* More tilt */
 	}
 
 	.layer-4 {
-		background: rgba(107, 114, 128, 0.1);
+		background: rgba(107, 114, 128, 0.05);
 		z-index: 4;
-		border: 1px solid rgba(107, 114, 128, 0.2);
+		border: 1px solid rgba(107, 114, 128, 0.1);
 		filter: blur(1.5px);
 		width: 75%;
 		margin-left: 12.5%;
+		transform: perspective(1000px) rotateX(30deg) translateY(60px); /* Most tilt */
 	}
 
 	.horizon {
