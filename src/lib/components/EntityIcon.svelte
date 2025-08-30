@@ -5,24 +5,52 @@
 
 	let {
 		entity,
+		relativeLayer = 1,
 		onEntityClick,
 		onEntityHover
 	}: {
 		entity: LandscapeEntity;
+		relativeLayer?: number;
 		onEntityClick?: (entity: LandscapeEntity) => void;
 		onEntityHover?: (entity: LandscapeEntity) => void;
 	} = $props();
 
-	// Calculate entity size based on proximity score
-	const size = $derived(Math.max(40, entity.position.proximity_score * 80 + 20));
+	// Calculate entity size based on relative layer position
+	let calculatedSize = $state(55);
 
-	// Calculate opacity based on layer depth
-	const opacity = $derived(
-		entity.position.z === 1 ? 1.0 : Math.max(0.4, 1.0 - (entity.position.z - 1) * 0.2)
-	);
+	$effect(() => {
+		const baseSize = 55; // Primary Focus layer size (increased to 55px)
+		const sizeByLayer: Record<number, number> = {
+			1: baseSize, // Primary Focus (55px)
+			2: baseSize * 0.75, // Extended Context (41px)
+			3: baseSize * 0.6, // Background Context (33px)
+			4: baseSize * 0.45 // Far Background (25px)
+		};
+		const newSize = sizeByLayer[relativeLayer] || baseSize * 0.7;
 
-	// Calculate blur based on layer depth
-	const blur = $derived(entity.position.z > 1 ? (entity.position.z - 1) * 2 : 0);
+		calculatedSize = newSize;
+	});
+
+	interface LayerStyle {
+		opacity: number;
+		background: string;
+		borderWidth: string;
+	}
+
+	type LayerConfig = {
+		[key: number]: LayerStyle;
+	};
+
+	// Calculate layer-specific visual properties based on relative layer position
+	const layerStyles = $derived(() => {
+		// Simple styles - no blur for layer 1, increasing blur for others
+		const styles = {
+			opacity: relativeLayer === 1 ? 1.0 : 0.8,
+			background: 'rgba(255, 255, 255, 1)',
+			borderWidth: relativeLayer === 1 ? '2px' : '1px'
+		};
+		return styles;
+	});
 
 	// Get state color
 	const stateColor = $derived(getStateColor(entity.state));
@@ -86,15 +114,23 @@
 </script>
 
 <div
-	class="entity-icon"
+	class="entity-icon {relativeLayer === 1 ? 'primary-focus' : ''}"
 	style="
-    width: {size}px; 
-    height: {size}px;
-    opacity: {opacity};
-    filter: blur({blur}px);
+    width: {calculatedSize}px; 
+    height: {calculatedSize}px;
+    opacity: {layerStyles().opacity};
+    filter: {relativeLayer === 1 ? 'none' : `blur(${relativeLayer}px)`};
     border-color: {stateColor};
-    transform: translate({entity.position.x}px, {entity.position.y}px);
+    border-width: {layerStyles().borderWidth};
+    background: {layerStyles().background};
+    transform: {relativeLayer === 1
+		? `translate3d(${entity.position.x}px, ${entity.position.y}px, 0)`
+		: `translate(${entity.position.x}px, ${entity.position.y}px)`};
   "
+	data-entity-type={entity.type}
+	data-entity-size={calculatedSize}
+	data-relative-layer={relativeLayer}
+	data-debug-info="layer:{relativeLayer},size:{calculatedSize}"
 	onclick={handleClick}
 	onmouseenter={handleMouseEnter}
 	role="button"
@@ -143,15 +179,38 @@
 </div>
 
 <style>
+	:global(.landscape-layers) {
+		transform-style: preserve-3d;
+		perspective: 1000px;
+		will-change: transform;
+	}
+
 	.entity-icon {
 		position: absolute;
+		transform-style: preserve-3d;
 		cursor: pointer;
 		transform-origin: center;
-		border: 3px solid;
 		border-radius: 50%;
-		background: rgba(255, 255, 255, 0.9);
-		backdrop-filter: blur(10px);
 		user-select: none;
+		transition: none;
+		/* Ensure perfect circular shape */
+		aspect-ratio: 1 / 1 !important;
+		flex-shrink: 0;
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		/* Force size to be respected */
+		min-width: unset !important;
+		min-height: unset !important;
+		max-width: none !important;
+		max-height: none !important;
+	}
+
+	/* Force sharpness for primary focus layer */
+	.entity-icon.primary-focus {
+		filter: none !important;
+		opacity: 1 !important;
 	}
 
 	/* Temporarily disabled hover effects to debug */
@@ -172,6 +231,8 @@
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
+		object-position: center;
+		display: block;
 	}
 
 	.state-glow {
@@ -287,11 +348,6 @@
 
 	/* Responsive sizing */
 	@media (max-width: 768px) {
-		.entity-icon {
-			min-width: 32px;
-			min-height: 32px;
-		}
-
 		.entity-name {
 			font-size: 10px;
 		}

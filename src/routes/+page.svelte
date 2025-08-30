@@ -4,9 +4,9 @@
 	import type { LandscapeEntity, AgentContext } from '$lib/types';
 	import { createLandscapeEntities, createTestAgentContext } from '$lib/entity-factory';
 
-	let entities: LandscapeEntity[] = [];
-	let agentContext: AgentContext;
-	let selectedAgent = 'agent_bob';
+	let entities = $state<LandscapeEntity[]>([]);
+	let agentContext = $state<AgentContext | null>(null);
+	let selectedAgent = $state('agent_bob');
 
 	// Available test agents
 	const testAgents = [
@@ -23,8 +23,9 @@
 
 	function loadAgentContext(agentId: string) {
 		try {
-			agentContext = createTestAgentContext(agentId);
-			entities = createLandscapeEntities(agentContext);
+			const newContext = createTestAgentContext(agentId, agentContext || undefined);
+			agentContext = newContext;
+			entities = createLandscapeEntities(newContext);
 			selectedAgent = agentId;
 		} catch (error) {
 			console.error('Failed to load agent context:', error);
@@ -32,7 +33,9 @@
 	}
 
 	function handleAgentContextChange(newContext: AgentContext) {
+		console.log('Handling agent context change:', newContext);
 		agentContext = newContext;
+		console.log('Updated agentContext:', agentContext);
 		entities = createLandscapeEntities(agentContext);
 	}
 

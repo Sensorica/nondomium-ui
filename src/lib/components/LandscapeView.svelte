@@ -6,16 +6,20 @@
 	import PerspectiveSelector from './PerspectiveSelector.svelte';
 	import { calculateProximity, assignLayer } from '../proximity-calculator';
 
-	const props = $props();
-	let {
-		entities,
-		agentContext,
-		onAgentContextChange
-	}: {
+	const props = $props<{
 		entities: LandscapeEntity[];
-		agentContext: AgentContext;
+		agentContext: AgentContext | null;
 		onAgentContextChange: (context: AgentContext) => void;
-	} = props;
+	}>();
+
+	let entities = $state(props.entities);
+	let agentContext = $state(props.agentContext);
+
+	// Keep entities and agentContext in sync with props
+	$effect(() => {
+		entities = props.entities;
+		agentContext = props.agentContext;
+	});
 
 	let landscapeContainer: HTMLDivElement;
 	let panX = $state(0);
@@ -29,7 +33,7 @@
 	let currentLayerIndex = $state(0); // 0 = initial position, 1 = first ArrowUp, etc.
 	let layerHistory: LandscapeEntity[][] = $state([]); // Track layers as we navigate
 	let canGoDown = $state(false); // Track if we can go back down
-	let visibleLayers = $state([1, 2, 3]); // Currently visible layer numbers
+	let visibleLayers = $state([2, 3, 4]); // Currently visible layer numbers (start with actual populated layers)
 
 	// Viewport dimensions
 	let viewportWidth = 1000;
@@ -89,7 +93,7 @@
 	// Layer navigation
 	function jumpToLayer(targetLayer: number) {
 		// Animate entities moving between layers
-		entities = entities.map((entity) => {
+		entities = entities.map((entity: LandscapeEntity) => {
 			if (entity.position.z > targetLayer) {
 				entity.position.z = Math.max(1, entity.position.z - 1);
 				entity.position.y -= 120 * 0.3; // Move forward
@@ -107,47 +111,24 @@
 
 	// Function to move one layer deeper (ArrowUp)
 	function moveDeeper() {
-		console.log(
-			'Current layer distribution:',
-			entities.reduce(
-				(acc, e) => {
-					acc[e.position.z] = (acc[e.position.z] || 0) + 1;
-					return acc;
-				},
-				{} as Record<number, number>
-			)
-		);
-
 		// Save current state to history before any changes
 		layerHistory = [...layerHistory, [...entities]];
 
 		// Update visible layers
 		visibleLayers = visibleLayers.map((layer) => layer + 1);
 		const newLastLayer = visibleLayers[2] + 1;
-		console.log('New layer range:', visibleLayers, 'with potential new layer:', newLastLayer);
 
 		// Update entities:
 		// 1. Remove layer 1 entities (they disappear)
-		// 2. Move each remaining layer up
-		// 3. Keep track of highest layer number we've seen
-		let maxLayer = 1;
-		entities = entities
-			.filter((entity) => entity.position.z > 1) // Remove layer 1
-			.map((entity) => {
-				maxLayer = Math.max(maxLayer, entity.position.z);
-				return {
-					...entity,
-					position: {
-						...entity.position,
-						z: entity.position.z - 1 // Move each layer up
-					}
-				};
-			});
+		// 2. Keep other entities in their current layers
+		entities = entities.filter((entity: LandscapeEntity) => entity.position.z > 1);
 
 		// Calculate proximity for potential new entities in the new last layer
 		// Find entities that could be in the new layer based on proximity
 		const potentialNewEntities = props.entities
-			.filter((e: LandscapeEntity) => !entities.some((existing) => existing.id === e.id)) // Not already visible
+			.filter(
+				(e: LandscapeEntity) => !entities.some((existing: LandscapeEntity) => existing.id === e.id)
+			) // Not already visible
 			.map((e: LandscapeEntity) => ({
 				...e,
 				position: {
@@ -163,89 +144,58 @@
 				...e,
 				position: {
 					...e.position,
-					z: visibleLayers[2]
+					z: visibleLayers[2] // Place in last visible layer
 				}
 			}));
 
 		// Add new entities if found
 		if (potentialNewEntities.length > 0) {
-			console.log(
-				'Adding new entities to layer',
-				visibleLayers[2],
-				':',
-				potentialNewEntities.length
-			);
+			// New entities added to last layer
 			entities = [...entities, ...potentialNewEntities];
 		}
 
 		currentLayerIndex++;
 		canGoDown = true;
 
-		console.log(
-			'New layer distribution:',
-			entities.reduce(
-				(acc, e) => {
-					acc[e.position.z] = (acc[e.position.z] || 0) + 1;
-					return acc;
-				},
-				{} as Record<number, number>
-			)
-		);
+		// Layer distribution updated
 	}
 
 	// Function to move one layer back (ArrowDown)
 	function moveBack() {
-		console.log('Can go down:', canGoDown);
-		console.log('Layer history length:', layerHistory.length);
-
 		if (canGoDown && layerHistory.length > 0) {
-			console.log('Moving back to previous layer...');
-
 			// Update visible layers first
 			visibleLayers = visibleLayers.map((layer) => layer - 1);
-			console.log('Restoring layer range:', visibleLayers);
-
 			// Restore previous layer state
 			const previousEntities = layerHistory.pop();
 			if (previousEntities) {
-				console.log('Previous layer state found');
 				// Completely replace current entities with previous state
 				entities = [...previousEntities];
 				currentLayerIndex--;
 				canGoDown = currentLayerIndex > 0;
-
-				console.log(
-					'New layer distribution:',
-					entities.reduce(
-						(acc, e) => {
-							acc[e.position.z] = (acc[e.position.z] || 0) + 1;
-							return acc;
-						},
-						{} as Record<number, number>
-					)
-				);
 			}
-		} else {
-			console.log('Cannot move back - either at initial layer or no history');
 		}
 	}
 
 	// Keyboard navigation
 	function handleKeyDown(event: KeyboardEvent) {
-		console.log('Key pressed:', event.key);
+		// Handle keyboard navigation
+
+		// Prevent default behavior for arrow keys
+		if (event.key.startsWith('Arrow')) {
+			event.preventDefault();
+		}
+
 		switch (event.key) {
 			case 'ArrowLeft':
-				panX += 50;
+				panX = panX + 50;
 				break;
 			case 'ArrowRight':
-				panX -= 50;
+				panX = panX - 50;
 				break;
 			case 'ArrowUp':
-				console.log('Moving deeper...');
 				moveDeeper(); // Move deeper into layers
 				break;
 			case 'ArrowDown':
-				console.log('Moving back...');
 				moveBack(); // Come back to front
 				break;
 			case 'Escape':
@@ -265,7 +215,7 @@
 	// Group entities by layer for rendering
 	const entityLayers = $derived(
 		entities.reduce(
-			(layers, entity) => {
+			(layers: Record<number, LandscapeEntity[]>, entity: LandscapeEntity) => {
 				const layer = entity.position.z;
 				if (!layers[layer]) layers[layer] = [];
 				layers[layer].push(entity);
@@ -274,13 +224,18 @@
 			{} as Record<number, LandscapeEntity[]>
 		)
 	);
+
+	// Track entity distribution across layers
+	$effect(() => {
+		// Layer distribution tracking
+	});
 </script>
 
 <svelte:window onmousemove={handleMouseMove} onmouseup={handleMouseUp} onkeydown={handleKeyDown} />
 
 <div class="landscape-view" bind:this={landscapeContainer}>
 	<!-- Perspective selector -->
-	<PerspectiveSelector {agentContext} onChange={onAgentContextChange} />
+	<PerspectiveSelector {agentContext} onChange={props.onAgentContextChange} />
 
 	<!-- Navigation hints -->
 	<div class="navigation-hints">
@@ -299,7 +254,7 @@
 		<!-- Layer rows stacked vertically -->
 		<div class="landscape-layers">
 			<!-- Always show three layers, using visibleLayers state -->
-			{#each visibleLayers as layerNumber}
+			{#each visibleLayers as layerNumber, index}
 				<div
 					class="landscape-layer layer-{layerNumber}"
 					style="transform: {getParallaxTransform(layerNumber)}"
@@ -316,8 +271,11 @@
 					</div>
 					{#if entityLayers[layerNumber]}
 						{#each entityLayers[layerNumber] as entity (entity.id)}
+							{@const relativeLayerPos = visibleLayers.indexOf(layerNumber) + 1}
+
 							<EntityIcon
 								{entity}
+								relativeLayer={relativeLayerPos}
 								onEntityClick={handleEntityClick}
 								onEntityHover={handleEntityHover}
 							/>
@@ -341,10 +299,12 @@
 	{/if}
 
 	<!-- Agent context display -->
-	<div class="agent-context">
-		<div class="context-role">{agentContext.role}</div>
-		<div class="context-perspective">{agentContext.perspective} view</div>
-	</div>
+	{#if agentContext}
+		<div class="agent-context">
+			<div class="context-role">{agentContext.role}</div>
+			<div class="context-perspective">{agentContext.perspective} view</div>
+		</div>
+	{/if}
 </div>
 
 <!-- Modal for entity details (micro layer) -->
@@ -358,7 +318,13 @@
 		width: 100%;
 		height: 100vh;
 		overflow: hidden;
-		background: linear-gradient(to bottom, #87ceeb 0%, #98fb98 50%, #f4a460 100%);
+		background: linear-gradient(
+			to bottom,
+			#87ceeb 0%,
+			/* Sky blue at top */ #98fb98 40%,
+			/* Light green above horizon */ #f4a460 60%,
+			/* Sandy color below horizon */ #d2691e 100% /* Darker earth tone at bottom */
+		);
 		cursor: grab;
 	}
 
@@ -376,13 +342,13 @@
 	}
 
 	.landscape-layers {
-		position: relative;
+		position: absolute;
 		width: 100%;
-		height: 100%;
+		height: 70%; /* Take up 70% of the screen height */
+		bottom: 15%; /* Position from bottom, leaving 15% margin */
 		display: flex;
 		flex-direction: column-reverse; /* Reverse the stacking order */
 		justify-content: flex-end; /* Align to bottom */
-		padding: 20px 0;
 		gap: 40px; /* Increased spacing between layers */
 	}
 
@@ -403,7 +369,23 @@
 		pointer-events: none;
 		border-radius: 8px;
 		background: rgba(255, 255, 255, 0.05);
+	}
+
+	/* Layer-specific backdrop blur */
+	.layer-1 .layer-background {
+		backdrop-filter: none;
+	}
+
+	.layer-2 .layer-background {
+		backdrop-filter: blur(1px);
+	}
+
+	.layer-3 .layer-background {
 		backdrop-filter: blur(2px);
+	}
+
+	.layer-4 .layer-background {
+		backdrop-filter: blur(3px);
 	}
 
 	.layer-label {
@@ -432,7 +414,6 @@
 		background: rgba(16, 185, 129, 0.1);
 		z-index: 8;
 		border: 1px solid rgba(16, 185, 129, 0.2);
-		filter: blur(0.5px);
 		width: 85%;
 		margin-left: 7.5%;
 		transform: perspective(1000px) rotateX(10deg) translateY(20px); /* Slight tilt */
@@ -442,7 +423,6 @@
 		background: rgba(245, 158, 11, 0.08);
 		z-index: 6;
 		border: 1px solid rgba(245, 158, 11, 0.15);
-		filter: blur(1px);
 		width: 80%;
 		margin-left: 10%;
 		transform: perspective(1000px) rotateX(20deg) translateY(40px); /* More tilt */
@@ -452,7 +432,6 @@
 		background: rgba(107, 114, 128, 0.05);
 		z-index: 4;
 		border: 1px solid rgba(107, 114, 128, 0.1);
-		filter: blur(1.5px);
 		width: 75%;
 		margin-left: 12.5%;
 		transform: perspective(1000px) rotateX(30deg) translateY(60px); /* Most tilt */
@@ -460,12 +439,13 @@
 
 	.horizon {
 		position: absolute;
-		bottom: 25%;
+		bottom: 40%; /* Align with the middle of the screen */
 		left: 0;
 		right: 0;
 		height: 2px;
 		background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.3), transparent);
 		z-index: 2;
+		pointer-events: none;
 	}
 
 	.navigation-hints {

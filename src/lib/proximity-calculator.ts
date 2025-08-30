@@ -17,35 +17,83 @@ export function calculateProximity(entity: LandscapeEntity, agentContext: AgentC
     let urgency = 0;
     let accessLevel = 0;
 
-    // Calculate role relevance based on entity type
+    // Adjust weights based on perspective
+    let adjustedWeights = { ...weights };
+    switch (agentContext.perspective) {
+        case 'role':
+            adjustedWeights.role_relevance = 0.6;
+            adjustedWeights.geographic_distance = 0.1;
+            adjustedWeights.interaction_frequency = 0.1;
+            adjustedWeights.temporal_urgency = 0.1;
+            adjustedWeights.governance_access = 0.1;
+            break;
+        case 'resource':
+            adjustedWeights.role_relevance = 0.2;
+            adjustedWeights.geographic_distance = 0.2;
+            adjustedWeights.interaction_frequency = 0.2;
+            adjustedWeights.temporal_urgency = 0.3;
+            adjustedWeights.governance_access = 0.1;
+            break;
+        case 'agent':
+            adjustedWeights.role_relevance = 0.3;
+            adjustedWeights.geographic_distance = 0.1;
+            adjustedWeights.interaction_frequency = 0.4;
+            adjustedWeights.temporal_urgency = 0.1;
+            adjustedWeights.governance_access = 0.1;
+            break;
+        case 'geographic':
+            adjustedWeights.role_relevance = 0.1;
+            adjustedWeights.geographic_distance = 0.6;
+            adjustedWeights.interaction_frequency = 0.1;
+            adjustedWeights.temporal_urgency = 0.1;
+            adjustedWeights.governance_access = 0.1;
+            break;
+    }
+
+    // Calculate role relevance based on entity type and perspective
     if (entity.type === 'person') {
         const person = entity.data as Person;
         roleMatch = calculateRoleMatch(person, agentContext);
+        // Boost person relevance in agent perspective
+        if (agentContext.perspective === 'agent') roleMatch *= 1.5;
     } else if (entity.type === 'resource') {
         const resource = entity.data as EconomicResource;
         roleMatch = calculateResourceRoleMatch(resource, agentContext);
+        // Boost resource relevance in resource perspective
+        if (agentContext.perspective === 'resource') roleMatch *= 1.5;
     }
 
-    // Calculate geographic distance (simplified - in real app would use actual coordinates)
+    // Calculate geographic distance with perspective consideration
     geoDistance = calculateGeographicDistance(entity, agentContext);
+    if (agentContext.perspective === 'geographic') {
+        // Reduce distance penalty in geographic view
+        geoDistance = geoDistance * 0.7;
+    }
 
-    // Calculate interaction frequency (simplified - would use actual history)
-    // Add some variation based on entity ID to ensure distribution
+    // Calculate interaction frequency
     const entityIdHash = entity.id.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
     interactionFreq = (entityIdHash % 50) / 100 + 0.25; // 0.25 to 0.75
+    if (agentContext.perspective === 'agent') {
+        // Boost interaction frequency in agent view
+        interactionFreq = Math.min(1.0, interactionFreq * 1.3);
+    }
 
     // Calculate urgency based on entity state
     urgency = calculateUrgency(entity);
+    if (agentContext.perspective === 'resource') {
+        // Boost urgency in resource view
+        urgency = Math.min(1.0, urgency * 1.3);
+    }
 
     // Calculate governance access level
     accessLevel = calculateAccessLevel(entity, agentContext);
 
     const proximityScore =
-        weights.role_relevance * roleMatch +
-        weights.geographic_distance * (1 - geoDistance) +
-        weights.interaction_frequency * interactionFreq +
-        weights.temporal_urgency * urgency +
-        weights.governance_access * accessLevel;
+        adjustedWeights.role_relevance * roleMatch +
+        adjustedWeights.geographic_distance * (1 - geoDistance) +
+        adjustedWeights.interaction_frequency * interactionFreq +
+        adjustedWeights.temporal_urgency * urgency +
+        adjustedWeights.governance_access * accessLevel;
 
     return Math.min(1.0, Math.max(0.0, proximityScore));
 }
@@ -133,9 +181,7 @@ export function generateEntityPositions(entities: LandscapeEntity[], agentContex
     }, {} as Record<number, LandscapeEntity[]>);
 
     // Debug: Log entity distribution
-    console.log('Entity distribution by layer:', Object.entries(layerGroups).map(([layer, entities]) =>
-        `Layer ${layer}: ${entities.length} entities`
-    ));
+
 
     // Position entities within each layer (coordinates relative to layer container)
     Object.entries(layerGroups).forEach(([layerStr, layerEntities]) => {
@@ -166,8 +212,6 @@ export function generateEntityPositions(entities: LandscapeEntity[], agentContex
         // Calculate starting position to center the group of entities around the panel center
         const startX = panelCenter - (totalEntitiesWidth / 2) + (entitySpacing / 2);
 
-        console.log(`Layer ${layer}: ${layerEntities.length} entities, panel center: ${panelCenter}px, spacing: ${entitySpacing}px, total width: ${totalEntitiesWidth}px, startX: ${startX}px`);
-
         layerEntities.forEach((entity, index) => {
             // X coordinate: start from the calculated start position and space entities evenly
             const x = startX + (index * entitySpacing);
@@ -177,7 +221,6 @@ export function generateEntityPositions(entities: LandscapeEntity[], agentContex
             entity.position.x = x;
             entity.position.y = y;
 
-            console.log(`  Entity ${entity.id}: x=${x}px, y=${y}px`);
         });
     });
 

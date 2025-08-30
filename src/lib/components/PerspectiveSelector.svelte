@@ -1,13 +1,10 @@
 <script lang="ts">
 	import type { AgentContext } from '../types';
 
-	let {
-		agentContext,
-		onChange
-	}: {
-		agentContext: AgentContext;
+	const props = $props<{
+		agentContext: AgentContext | null;
 		onChange: (context: AgentContext) => void;
-	} = $props();
+	}>();
 
 	const perspectives = [
 		{ id: 'role', name: 'Role', icon: '👷', description: 'View resources relevant to your role' },
@@ -24,10 +21,13 @@
 	let isOpen = $state(false);
 
 	function selectPerspective(perspectiveId: (typeof perspectives)[number]['id']) {
-		onChange({
-			...agentContext,
+		if (!props.agentContext) return;
+
+		const newContext = {
+			...props.agentContext,
 			perspective: perspectiveId
-		});
+		};
+		props.onChange(newContext);
 		isOpen = false;
 	}
 
@@ -49,7 +49,17 @@
 		}
 	}
 
-	const currentPerspective = $derived(perspectives.find((p) => p.id === agentContext.perspective));
+	type Perspective = (typeof perspectives)[number];
+	let currentPerspective = $state<Perspective>(perspectives[0]);
+
+	$effect(() => {
+		if (!props.agentContext) {
+			currentPerspective = perspectives[0];
+			return;
+		}
+		const perspective = perspectives.find((p) => p.id === props.agentContext?.perspective);
+		currentPerspective = perspective || perspectives[0];
+	});
 </script>
 
 <svelte:window onclick={handleClickOutside} onkeydown={handleKeyDown} />
@@ -73,10 +83,10 @@
 			{#each perspectives as perspective}
 				<button
 					class="perspective-option"
-					class:active={perspective.id === agentContext.perspective}
+					class:active={props.agentContext && perspective.id === props.agentContext.perspective}
 					onclick={() => selectPerspective(perspective.id)}
 					role="option"
-					aria-selected={perspective.id === agentContext.perspective}
+					aria-selected={props.agentContext && perspective.id === props.agentContext.perspective}
 				>
 					<div class="option-content">
 						<span class="option-icon">{perspective.icon}</span>
