@@ -206,7 +206,8 @@ export function generateEntityPositions(entities: LandscapeEntity[], agentContex
         const panelCenter = panelLeft + (panelWidth / 2); // Center of the panel
 
         // Calculate total width needed for all entities in this layer
-        const entitySpacing = 80; // Minimum spacing between entities
+        const baseEntitySize = 55; // Base entity size
+        const entitySpacing = baseEntitySize * 3; // Space entities by 3x their size (doubled from 1.5x)
         const totalEntitiesWidth = layerEntities.length * entitySpacing;
 
         // Calculate starting position to center the group of entities around the panel center

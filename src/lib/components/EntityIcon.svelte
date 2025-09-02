@@ -28,6 +28,10 @@
 		};
 		const newSize = sizeByLayer[relativeLayer] || baseSize * 0.7;
 
+		// Calculate indicator scale based on entity size
+		const indicatorScale = newSize / baseSize;
+		document.documentElement.style.setProperty('--indicator-scale', indicatorScale.toString());
+
 		calculatedSize = newSize;
 	});
 
@@ -52,8 +56,12 @@
 		return styles;
 	});
 
-	// Get state color
+	// Get state color and log state for debugging
 	const stateColor = $derived(getStateColor(entity.state));
+
+	$effect(() => {
+		console.log(`Entity state for ${entity.type}:`, entity.state);
+	});
 
 	// Get entity image or icon
 	const entityDisplay = $derived(getEntityDisplay(entity));
@@ -116,8 +124,7 @@
 <div
 	class="entity-icon {relativeLayer === 1 ? 'primary-focus' : ''}"
 	style="
-    width: {calculatedSize}px; 
-    height: {calculatedSize}px;
+    --size: {calculatedSize}px;
     opacity: {layerStyles().opacity};
     filter: {relativeLayer === 1 ? 'none' : `blur(${relativeLayer}px)`};
     border-color: {stateColor};
@@ -137,8 +144,8 @@
 	tabindex="0"
 	onkeydown={(e) => e.key === 'Enter' && handleClick()}
 >
-	<div class="entity-image">
-		<img src={entityDisplay.image} alt={entityDisplay.name} />
+	<div class="entity-image {entity.type}-image">
+		<img src={entityDisplay.image} alt={entityDisplay.name} class="{entity.type}-img" />
 	</div>
 
 	<!-- State indicator glow -->
@@ -193,18 +200,14 @@
 		border-radius: 50%;
 		user-select: none;
 		transition: none;
-		/* Ensure perfect circular shape */
-		aspect-ratio: 1 / 1 !important;
-		flex-shrink: 0;
-		overflow: hidden;
+		/* Force exact dimensions */
+		width: var(--size) !important;
+		height: var(--size) !important;
+		flex: none;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		/* Force size to be respected */
-		min-width: unset !important;
-		min-height: unset !important;
-		max-width: none !important;
-		max-height: none !important;
+		box-sizing: border-box;
 	}
 
 	/* Force sharpness for primary focus layer */
@@ -223,8 +226,9 @@
 		width: 100%;
 		height: 100%;
 		border-radius: 50%;
-		overflow: hidden;
+		overflow: hidden !important; /* Ensure image is clipped to circle */
 		position: relative;
+		flex: none; /* Prevent flex stretching */
 	}
 
 	.entity-image img {
@@ -233,6 +237,25 @@
 		object-fit: cover;
 		object-position: center;
 		display: block;
+	}
+
+	/* Specific handling for resource images */
+	.resource-image {
+		position: relative;
+		padding-top: 100%; /* Force 1:1 aspect ratio */
+		width: 100%;
+		height: 0;
+	}
+
+	.resource-image img {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center;
+		transform: scale(1.01); /* Prevent subpixel rendering gaps */
 	}
 
 	.state-glow {
@@ -254,14 +277,15 @@
 
 	.state-indicators {
 		position: absolute;
-		inset: -15px;
+		inset: -10px; /* Reduced from -15px to bring indicators closer */
 		pointer-events: none;
+		z-index: 10; /* Ensure indicators are above the entity icon */
 	}
 
 	.state-indicator {
 		position: absolute;
-		width: 16px;
-		height: 16px;
+		width: calc(16px * var(--indicator-scale, 1));
+		height: calc(16px * var(--indicator-scale, 1));
 		border-radius: 50%;
 		background: rgba(255, 255, 255, 0.9);
 		backdrop-filter: blur(4px);
@@ -269,41 +293,41 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 8px;
+		font-size: calc(8px * var(--indicator-scale, 1));
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 		transition: transform 0.2s ease;
 	}
 
 	/* Position state indicators around the entity */
 	.state-indicator.available {
-		top: -8px;
-		right: -8px;
+		top: -6px;
+		right: -6px;
 	}
 
 	.state-indicator.needs-attention {
-		top: -8px;
-		left: -8px;
+		top: -6px;
+		left: -6px;
 	}
 
 	.state-indicator.critical {
-		bottom: -8px;
-		right: -8px;
+		bottom: -6px;
+		right: -6px;
 	}
 
 	.state-indicator.in-use {
-		bottom: -8px;
-		left: -8px;
+		bottom: -6px;
+		left: -6px;
 	}
 
 	.state-indicator.dormant {
 		top: 50%;
-		right: -8px;
+		right: -6px;
 		transform: translateY(-50%);
 	}
 
 	.state-indicator.pending {
 		top: 50%;
-		left: -8px;
+		left: -6px;
 		transform: translateY(-50%);
 	}
 

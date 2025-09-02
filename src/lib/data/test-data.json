@@ -184,7 +184,7 @@
       "name": "Professional Woodworking Table Saw",
       "description": "High-precision cabinet table saw with cast iron top, suitable for fine woodworking and furniture making. Includes safety features and dust collection system.",
       "category": "workshop_tools",
-      "image_url": "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=400",
+      "image_url": "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=150&h=150&fit=crop",
       "tags": [
         "woodworking",
         "table_saw",
@@ -205,7 +205,7 @@
       "name": "Cargo Bike for Community Deliveries",
       "description": "Electric-assist cargo bicycle with large front box, perfect for transporting resources around the community. Weather-resistant and high capacity.",
       "category": "transportation",
-      "image_url": "https://images.unsplash.com/photo-1558618047-b2ca3d7c997c?w=400",
+      "image_url": "https://images.unsplash.com/photo-1558618047-b2ca3d7c997c?w=150&h=150&fit=crop",
       "tags": [
         "cargo_bike",
         "electric",
@@ -226,7 +226,7 @@
       "name": "Community Garden Tool Set",
       "description": "Complete set of gardening tools including spades, hoes, pruning shears, watering equipment. Maintained collectively for community garden use.",
       "category": "gardening",
-      "image_url": "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400",
+      "image_url": "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=150&h=150&fit=crop",
       "tags": [
         "gardening",
         "tools",
@@ -246,7 +246,7 @@
       "name": "Laptop Computer for Development Work",
       "description": "High-performance laptop suitable for software development, design work, and community administration. Includes development tools and office software.",
       "category": "technology",
-      "image_url": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400",
+      "image_url": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=150&h=150&fit=crop",
       "tags": [
         "laptop",
         "computer",
